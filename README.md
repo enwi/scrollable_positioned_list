@@ -12,7 +12,6 @@ except that the list can be scrolled or jumped to a specific item.
 ### Example
 
 A `ScrollablePositionedList` can be created with:
-
 ```dart
 final ItemScrollController itemScrollController = ItemScrollController();
 final ScrollOffsetController scrollOffsetController = ScrollOffsetController();
@@ -30,22 +29,46 @@ ScrollablePositionedList.builder(
 ```
 
 One then can scroll to a particular item with:
-
 ```dart
 itemScrollController.scrollTo(
   index: 150,
   duration: Duration(seconds: 2),
-  curve: Curves.easeInOutCubic);
+  curve: Curves.easeInOutCubic,
+);
+```
+
+or scroll to the first item with:
+```dart
+itemScrollController.scrollToFirst(
+  duration: Duration(seconds: 2),
+  curve: Curves.easeInOutCubic,
+);
+```
+
+or scroll to the last item with:
+```dart
+itemScrollController.scrollToLast(
+  duration: Duration(seconds: 2),
+  curve: Curves.easeInOutCubic,
+);
 ```
 
 or jump to a particular item with:
-
 ```dart
 itemScrollController.jumpTo(index: 150);
 ```
 
-One can monitor what items are visible on screen with:
+or jump to the first item with:
+```dart
+itemScrollController.jumpToFirst();
+```
 
+or jump to the last item with:
+```dart
+itemScrollController.jumpToLast();
+```
+
+One can monitor what items are visible on screen with:
 ```dart
 itemPositionsListener.itemPositions.addListener(() => ...);
 ```
@@ -53,7 +76,6 @@ itemPositionsListener.itemPositions.addListener(() => ...);
 ### Experimental APIs (subject to bugs and changes)
 
 Changes in scroll position can be monitored with:
-
 ```dart
 scrollOffsetListener.changes.listen((event) => ...)
 ```
@@ -62,9 +84,13 @@ see `ScrollSum` in [this test](test/scroll_offset_listener_test.dart) for an exa
 calculated from the stream of scroll change deltas.  This feature is new and experimental.
 
 Changes in scroll position in pixels, relative to the current scroll position, can be made with:
-
 ```dart
-scrollOffsetController.animateScroll(offset: 100, duration: Duration(seconds: 1));
+scrollOffsetController.scrollBy(offset: 100, duration: Duration(seconds: 1));
+```
+
+or to jump without animation use:
+```dart
+scrollOffsetController.jumpBy(offset: 100);
 ```
 
 A full example can be found in the example folder.

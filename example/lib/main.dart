@@ -94,19 +94,19 @@ class _ScrollablePositionedListPageState
                 child: list(orientation),
               ),
               positionsView,
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      scrollControlButtons,
-                      scrollOffsetControlButtons,
-                      const SizedBox(height: 10),
-                      jumpControlButtons,
-                      alignmentControl,
-                    ],
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    scrollControlButtons,
+                    scrollOffsetControlButtons,
+                    const SizedBox(height: 10),
+                    jumpControlButtons,
+                    jumpOffsetControlButtons,
+                    alignmentControl,
+                  ],
+                ),
               )
             ],
           ),
@@ -190,12 +190,13 @@ class _ScrollablePositionedListPageState
   Widget get scrollControlButtons => Row(
         children: <Widget>[
           const Text('scroll to'),
-          scrollItemButton(0),
+          scrollToFirstButton(),
           scrollItemButton(5),
           scrollItemButton(10),
           scrollItemButton(100),
           scrollItemButton(1000),
           scrollItemButton(5000),
+          scrollToLastButton(),
         ],
       );
 
@@ -214,12 +215,25 @@ class _ScrollablePositionedListPageState
   Widget get jumpControlButtons => Row(
         children: <Widget>[
           const Text('jump to'),
-          jumpButton(0),
-          jumpButton(5),
-          jumpButton(10),
-          jumpButton(100),
-          jumpButton(1000),
-          jumpButton(5000),
+          jumpToFirstButton(),
+          jumpItemButton(5),
+          jumpItemButton(10),
+          jumpItemButton(100),
+          jumpItemButton(1000),
+          jumpItemButton(5000),
+          jumpToLastButton(),
+        ],
+      );
+
+  Widget get jumpOffsetControlButtons => Row(
+        children: <Widget>[
+          const Text('jump by'),
+          jumpOffsetButton(-1000),
+          jumpOffsetButton(-100),
+          jumpOffsetButton(-10),
+          jumpOffsetButton(10),
+          jumpOffsetButton(100),
+          jumpOffsetButton(1000),
         ],
       );
 
@@ -236,7 +250,21 @@ class _ScrollablePositionedListPageState
         key: ValueKey<String>('Scroll$value'),
         onPressed: () => scrollTo(value),
         child: Text('$value'),
-        style: _scrollButtonStyle(horizontalPadding: 20),
+        style: _scrollButtonStyle(horizontalPadding: 10),
+      );
+
+  Widget scrollToFirstButton() => TextButton(
+        key: ValueKey<String>('ScrollFirst'),
+        onPressed: () => scrollToFirst(),
+        child: Text('First'),
+        style: _scrollButtonStyle(horizontalPadding: 10),
+      );
+
+  Widget scrollToLastButton() => TextButton(
+        key: ValueKey<String>('ScrollLast'),
+        onPressed: () => scrollToLast(),
+        child: Text('Last'),
+        style: _scrollButtonStyle(horizontalPadding: 10),
       );
 
   Widget scrollOffsetButton(int value) => TextButton(
@@ -250,27 +278,78 @@ class _ScrollablePositionedListPageState
         key: ValueKey<String>('Scroll$value'),
         onPressed: () => scrollTo(value),
         child: Text('$value'),
-        style: _scrollButtonStyle(horizontalPadding: 20),
+        style: _scrollButtonStyle(horizontalPadding: 10),
       );
 
-  Widget jumpButton(int value) => TextButton(
+  Widget jumpItemButton(int value) => TextButton(
         key: ValueKey<String>('Jump$value'),
         onPressed: () => jumpTo(value),
         child: Text('$value'),
-        style: _scrollButtonStyle(horizontalPadding: 20),
+        style: _scrollButtonStyle(horizontalPadding: 10),
+      );
+
+  Widget jumpToFirstButton() => TextButton(
+        key: ValueKey<String>('JumpFirst'),
+        onPressed: () => jumpToFirst(),
+        child: Text('First'),
+        style: _scrollButtonStyle(horizontalPadding: 10),
+      );
+
+  Widget jumpToLastButton() => TextButton(
+        key: ValueKey<String>('JumpLast'),
+        onPressed: () => jumpToLast(),
+        child: Text('Last'),
+        style: _scrollButtonStyle(horizontalPadding: 10),
+      );
+
+  Widget jumpOffsetButton(int value) => TextButton(
+        key: ValueKey<String>('Jump$value'),
+        onPressed: () => jumpBy(value.toDouble()),
+        child: Text('$value'),
+        style: _scrollButtonStyle(horizontalPadding: 10),
       );
 
   void scrollTo(int index) => itemScrollController.scrollTo(
-      index: index,
-      duration: scrollDuration,
-      curve: Curves.easeInOutCubic,
-      alignment: alignment);
+        index: index,
+        duration: scrollDuration,
+        curve: Curves.easeInOutCubic,
+        alignment: alignment,
+      );
+
+  void scrollToFirst() => itemScrollController.scrollToFirst(
+        duration: scrollDuration,
+        curve: Curves.easeInOutCubic,
+        alignment: alignment,
+      );
+
+  void scrollToLast() => itemScrollController.scrollToLast(
+        duration: scrollDuration,
+        curve: Curves.easeInOutCubic,
+        alignment: alignment,
+      );
 
   void scrollBy(double offset) => scrollOffsetController.scrollBy(
-      offset: offset, duration: scrollDuration, curve: Curves.easeInOutCubic);
+        offset: offset,
+        duration: scrollDuration,
+        curve: Curves.easeInOutCubic,
+      );
 
-  void jumpTo(int index) =>
-      itemScrollController.jumpTo(index: index, alignment: alignment);
+  void jumpTo(int index) => itemScrollController.jumpTo(
+        index: index,
+        alignment: alignment,
+      );
+
+  void jumpToFirst() => itemScrollController.jumpToFirst(
+        alignment: alignment,
+      );
+
+  void jumpToLast() => itemScrollController.jumpToLast(
+        alignment: alignment,
+      );
+
+  void jumpBy(double offset) => scrollOffsetController.jumpBy(
+        offset: offset,
+      );
 
   /// Generate item number [i].
   Widget item(int i, Orientation orientation) {

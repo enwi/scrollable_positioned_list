@@ -30,7 +30,7 @@ const int _screenScrollCount = 2;
 /// in the list.  The [itemPositionsNotifier] can be used to get a list of items
 /// currently laid out by the list.
 ///
-/// The [scrollOffsetListener] can be used to get updates about scroll position
+/// The [ScrollOffsetListener] can be used to get updates about scroll position
 /// changes.
 ///
 /// All other parameters are the same as specified in [ListView].
@@ -47,7 +47,7 @@ class ScrollablePositionedList extends StatefulWidget {
     this.scrollOffsetController,
     ScrollOffsetListener? scrollOffsetListener,
     this.initialScrollIndex = 0,
-    this.initialAlignment = 0,
+    this.initialAlignment = ItemAlignment.start,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.physics,
@@ -78,7 +78,7 @@ class ScrollablePositionedList extends StatefulWidget {
     this.scrollOffsetController,
     ScrollOffsetListener? scrollOffsetListener,
     this.initialScrollIndex = 0,
-    this.initialAlignment = 0,
+    this.initialAlignment = ItemAlignment.start,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.physics,
@@ -124,7 +124,7 @@ class ScrollablePositionedList extends StatefulWidget {
   /// Determines where the leading edge of the item at [initialScrollIndex]
   /// should be placed.
   ///
-  /// See [ItemScrollController.jumpTo] for an explanation of alignment.
+  /// See [ItemAlignment] for an explanation of alignment.
   final double initialAlignment;
 
   /// The axis along which the scroll view scrolls.
@@ -210,51 +210,67 @@ class ScrollablePositionedList extends StatefulWidget {
   State<StatefulWidget> createState() => _ScrollablePositionedListState();
 }
 
-/// Controller to jump or scroll to a particular position in a
-/// [ScrollablePositionedList].
-class ItemScrollController {
-  /// Whether any ScrollablePositionedList objects are attached this object.
+/// Base class for controllers that can be attached to a [ScrollablePositionedList].
+class _AttachableController {
+  /// The state of the attached ScrollablePositionedList, or null if not attached.
+  _ScrollablePositionedListState? _scrollableListState;
+
+  /// Whether any ScrollablePositionedList objects are attached this controller (true) or not (false).
   ///
-  /// If `false`, then [jumpTo] and [scrollTo] must not be called.
+  /// If `false`, then no controller function should be called.
   bool get isAttached => _scrollableListState != null;
 
-  _ScrollablePositionedListState? _scrollableListState;
+  /// The current scroll offset in pixels.
+  double get currentPosition =>
+      _scrollableListState!.primary.scrollController.offset;
+
+  void _attach(_ScrollablePositionedListState scrollableListState) {
+    assert(_scrollableListState == null);
+    _scrollableListState = scrollableListState;
+  }
+
+  void _detach() {
+    _scrollableListState = null;
+  }
+}
+
+/// Controller to jump or scroll to a particular position in a
+/// [ScrollablePositionedList].
+class ItemScrollController extends _AttachableController {
+  int get _lastIndex => _scrollableListState!.widget.itemCount - 1;
 
   /// Immediately, without animation, reconfigure the list so that the item at
   /// [index]'s leading edge is at the given [alignment].
   ///
-  /// The [alignment] specifies the desired position for the leading edge of the
-  /// item.  The [alignment] is expected to be a value in the range \[0.0, 1.0\]
-  /// and represents a proportion along the main axis of the viewport.
-  ///
-  /// For a vertically scrolling view that is not reversed:
-  /// * 0 aligns the top edge of the item with the top edge of the view.
-  /// * 1 aligns the top edge of the item with the bottom of the view.
-  /// * 0.5 aligns the top edge of the item with the center of the view.
-  ///
-  /// For a horizontally scrolling view that is not reversed:
-  /// * 0 aligns the left edge of the item with the left edge of the view
-  /// * 1 aligns the left edge of the item with the right edge of the view.
-  /// * 0.5 aligns the left edge of the item with the center of the view.
+  /// See [ItemAlignment] for an explanation of [alignment].
   void jumpTo({
     required int index,
-    double alignment = 0,
-  }) {
-    _scrollableListState!._jumpTo(index: index, alignment: alignment);
-  }
+    double alignment = ItemAlignment.start,
+  }) =>
+      _scrollableListState!._jumpTo(index: index, alignment: alignment);
 
   /// Immediately, without animation, reconfigure the list so that the first item's
   /// leading edge is at the given [alignment].
-  /// See [jumpTo] for an explanation of [alignment].
-  void jumpToTop({
-    double alignment = 0,
-  }) {
-    jumpTo(index: 0, alignment: alignment);
-  }
+  ///
+  /// See [ItemAlignment] for an explanation of [alignment].
+  void jumpToFirst({
+    double alignment = ItemAlignment.start,
+  }) =>
+      jumpTo(index: 0, alignment: alignment);
+
+  /// Immediately, without animation, reconfigure the list so that the last item's
+  /// leading edge is at the given [alignment].
+  ///
+  /// See [ItemAlignment] for an explanation of [alignment].
+  void jumpToLast({
+    double alignment = ItemAlignment.start,
+  }) =>
+      jumpTo(index: _lastIndex, alignment: alignment);
 
   /// Animate the list over [duration] using the given [curve] such that the
   /// item at [index] ends up with its leading edge at the given [alignment].
-  /// See [jumpTo] for an explanation of alignment.
+  ///
+  /// See [ItemAlignment] for an explanation of alignment.
   ///
   /// The [duration] must be greater than 0; otherwise, use [jumpTo].
   ///
@@ -275,7 +291,7 @@ class ItemScrollController {
   /// See [TweenSequenceItem.weight] for more info.
   Future<void> scrollTo({
     required int index,
-    double alignment = 0,
+    double alignment = ItemAlignment.start,
     required Duration duration,
     Curve curve = Curves.linear,
     List<double> opacityAnimationWeights = const [40, 20, 40],
@@ -294,33 +310,45 @@ class ItemScrollController {
 
   /// Animate the list over [duration] using the given [curve] such that the
   /// first item ends up with its leading edge at the given [alignment].
-  /// See [jumpTo] for an explanation of [alignment].
+  ///
+  /// See [ItemAlignment] for an explanation of [alignment].
   /// See [scrollTo] for an explanation of [opacityAnimationWeights].
   ///
   /// The [duration] must be greater than 0; otherwise, use [jumpTo].
-  Future<void> scrollToTop({
+  Future<void> scrollToFirst({
     double alignment = 0,
     required Duration duration,
     Curve curve = Curves.linear,
     List<double> opacityAnimationWeights = const [40, 20, 40],
-  }) async {
-    await scrollTo(
-      index: 0,
-      alignment: alignment,
-      duration: duration,
-      curve: curve,
-      opacityAnimationWeights: opacityAnimationWeights,
-    );
-  }
+  }) async =>
+      scrollTo(
+        index: 0,
+        alignment: alignment,
+        duration: duration,
+        curve: curve,
+        opacityAnimationWeights: opacityAnimationWeights,
+      );
 
-  void _attach(_ScrollablePositionedListState scrollableListState) {
-    assert(_scrollableListState == null);
-    _scrollableListState = scrollableListState;
-  }
-
-  void _detach() {
-    _scrollableListState = null;
-  }
+  /// Animate the list over [duration] using the given [curve] such that the
+  /// last item ends up with its leading edge at the given [alignment].
+  ///
+  /// See [ItemAlignment] for an explanation of [alignment].
+  /// See [scrollTo] for an explanation of [opacityAnimationWeights].
+  ///
+  /// The [duration] must be greater than 0; otherwise, use [jumpTo].
+  Future<void> scrollToLast({
+    double alignment = 0,
+    required Duration duration,
+    Curve curve = Curves.linear,
+    List<double> opacityAnimationWeights = const [40, 20, 40],
+  }) async =>
+      scrollTo(
+        index: _lastIndex,
+        alignment: alignment,
+        duration: duration,
+        curve: curve,
+        opacityAnimationWeights: opacityAnimationWeights,
+      );
 }
 
 /// Controller to scroll a certain number of pixels relative to the current
@@ -328,44 +356,29 @@ class ItemScrollController {
 ///
 /// This is an experimental API and is subject to change.
 /// Behavior may be ill-defined in some cases.  Please file bugs.
-class ScrollOffsetController {
-  _ScrollablePositionedListState? _scrollableListState;
-
-  /// The current scroll offset in pixels.
-  double get currentPosition =>
-      _scrollableListState!.primary.scrollController.offset;
-
-  /// Scrolls the list by a certain number of pixels relative to the current
-  /// scroll offset. The [offset] can be positive or negative.
+class ScrollOffsetController extends _AttachableController {
+  /// Scrolls the list by a certain number of pixels relative to the current scroll offset.
+  /// The [offset] can be positive or negative.
+  ///
+  ///  The [duration] must be greater than 0; otherwise, use [jumpBy].
   Future<void> scrollBy({
     required double offset,
     required Duration duration,
     Curve curve = Curves.linear,
-  }) async {
-    final newPosition = currentPosition + offset;
-    await _scrollableListState!.primary.scrollController.animateTo(
-      newPosition,
-      duration: duration,
-      curve: curve,
-    );
-  }
+  }) async =>
+      _scrollableListState!.primary.scrollController.animateTo(
+        currentPosition + offset,
+        duration: duration,
+        curve: curve,
+      );
 
-  /// Jumps the list by a certain number of pixels relative to the current
+  /// Jumps the list by a certain number of pixels relative to the current scroll offset.
+  /// The [offset] can be positive or negative.
   void jumpBy({
     required double offset,
-  }) {
-    final newPosition = currentPosition + offset;
-    _scrollableListState!.primary.scrollController.jumpTo(newPosition);
-  }
-
-  void _attach(_ScrollablePositionedListState scrollableListState) {
-    assert(_scrollableListState == null);
-    _scrollableListState = scrollableListState;
-  }
-
-  void _detach() {
-    _scrollableListState = null;
-  }
+  }) =>
+      _scrollableListState!.primary.scrollController
+          .jumpTo(currentPosition + offset);
 }
 
 class _ScrollablePositionedListState extends State<ScrollablePositionedList>
@@ -734,7 +747,7 @@ class _ListDisplayDetails {
   /// The desired alignment for [target].
   ///
   /// See [ItemScrollController.jumpTo] for an explanation of alignment.
-  double alignment = 0;
+  double alignment = ItemAlignment.start;
 
   final Key key;
 }
