@@ -153,7 +153,9 @@ class CustomRenderShrinkWrappingViewport extends CustomRenderViewport {
 
   @override
   set anchor(double value) {
-    if (value == _anchor) return;
+    if (value == _anchor) {
+      return;
+    }
     _anchor = value;
     markNeedsLayout();
   }
@@ -324,7 +326,9 @@ class CustomRenderShrinkWrappingViewport extends CustomRenderViewport {
         cacheOrigin: (mainAxisExtent - centerOffset)
             .clamp(-_calculatedCacheExtent!, 0.0),
       );
-      if (result != 0.0) return -result;
+      if (result != 0.0) {
+        return -result;
+      }
     }
 
     // positive scroll offsets
@@ -744,7 +748,9 @@ abstract class CustomRenderViewport
   RenderSliver? _center;
 
   set center(RenderSliver? value) {
-    if (value == _center) return;
+    if (value == _center) {
+      return;
+    }
     _center = value;
     markNeedsLayout();
   }
@@ -948,13 +954,17 @@ abstract class CustomRenderViewport
 
   @override
   String labelForChild(int index) {
-    if (index == 0) return 'center child';
+    if (index == 0) {
+      return 'center child';
+    }
     return 'child $index';
   }
 
   @override
   Iterable<RenderSliver> get childrenInPaintOrder sync* {
-    if (firstChild == null) return;
+    if (firstChild == null) {
+      return;
+    }
     RenderSliver? child = firstChild;
     while (child != center) {
       yield child!;
@@ -963,14 +973,18 @@ abstract class CustomRenderViewport
     child = lastChild;
     while (true) {
       yield child!;
-      if (child == center) return;
+      if (child == center) {
+        return;
+      }
       child = childBefore(child);
     }
   }
 
   @override
   Iterable<RenderSliver> get childrenInHitTestOrder sync* {
-    if (firstChild == null) return;
+    if (firstChild == null) {
+      return;
+    }
     RenderSliver? child = center;
     while (child != null) {
       yield child;

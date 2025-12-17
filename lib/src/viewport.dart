@@ -106,7 +106,9 @@ class UnboundedRenderViewport extends RenderViewport {
 
   @override
   set anchor(double value) {
-    if (value == _anchor) return;
+    if (value == _anchor) {
+      return;
+    }
     _anchor = value;
     markNeedsLayout();
   }
@@ -277,7 +279,9 @@ class UnboundedRenderViewport extends RenderViewport {
         cacheOrigin: (mainAxisExtent - centerOffset)
             .clamp(-_calculatedCacheExtent!, 0.0),
       );
-      if (result != 0.0) return -result;
+      if (result != 0.0) {
+        return -result;
+      }
     }
 
     // positive scroll offsets

@@ -44,7 +44,9 @@ class ItemPosition {
 
   @override
   bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
     final otherPosition = other as ItemPosition;
     return otherPosition.index == index &&
         otherPosition.itemLeadingEdge == itemLeadingEdge &&

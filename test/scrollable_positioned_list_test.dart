@@ -2293,7 +2293,9 @@ void main() {
 
 bool collectSemanticNodes(SemanticsNode root, List<SemanticsNode> nodes) {
   nodes.add(root);
-  if (!root.hasChildren) return true;
+  if (!root.hasChildren) {
+    return true;
+  }
   root.visitChildren((child) => collectSemanticNodes(child, nodes));
   return true;
 }

@@ -341,12 +341,19 @@ class _PositionedListState extends State<PositionedList> {
 
           final ValueKey<int> key = element.widget.key as ValueKey<int>;
           // Skip this element if `box` has never been laid out.
-          if (!box.hasSize) continue;
+          if (!box.hasSize) {
+            continue;
+          }
           if (widget.scrollDirection == Axis.vertical) {
             final reveal = viewport!.getOffsetToReveal(box, 0).offset;
-            if (!reveal.isFinite) continue;
+            if (!reveal.isFinite) {
+              continue;
+            }
             final itemOffset =
                 reveal - viewport.offset.pixels + anchor * viewport.size.height;
+            if (!itemOffset.isFinite) {
+              continue;
+            }
             positions.add(ItemPosition(
                 index: key.value,
                 itemLeadingEdge: itemOffset.round() /
@@ -356,7 +363,9 @@ class _PositionedListState extends State<PositionedList> {
           } else {
             final itemOffset =
                 box.localToGlobal(Offset.zero, ancestor: viewport).dx;
-            if (!itemOffset.isFinite) continue;
+            if (!itemOffset.isFinite) {
+              continue;
+            }
             positions.add(ItemPosition(
                 index: key.value,
                 itemLeadingEdge: (widget.reverse
