@@ -59,6 +59,7 @@ class ScrollablePositionedList extends StatefulWidget {
     this.minCacheExtent,
     this.thumbVisibility = false,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
+    this.clipBehavior = Clip.hardEdge,
   })  : assert(itemCount != null),
         assert(itemBuilder != null),
         itemPositionsNotifier = itemPositionsListener as ItemPositionsNotifier?,
@@ -91,6 +92,7 @@ class ScrollablePositionedList extends StatefulWidget {
     this.minCacheExtent,
     this.thumbVisibility = false,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
+    this.clipBehavior = Clip.hardEdge,
   })  : assert(itemCount != null),
         assert(itemBuilder != null),
         assert(separatorBuilder != null),
@@ -141,14 +143,13 @@ class ScrollablePositionedList extends StatefulWidget {
   /// See [ScrollView.reverse].
   final bool reverse;
 
-  /// {@template flutter.widgets.scroll_view.shrinkWrap}
+  /// {@macro flutter.widgets.scroll_view.shrinkWrap}
   /// Whether the extent of the scroll view in the [scrollDirection] should be
   /// determined by the contents being viewed.
   ///
   ///  Defaults to false.
   ///
   /// See [ScrollView.shrinkWrap].
-  /// {@endtemplate}
   final bool shrinkWrap;
 
   /// How the scroll view should respond to user input.
@@ -203,6 +204,11 @@ class ScrollablePositionedList extends StatefulWidget {
   ///
   /// See [ScrollView.keyboardDismissBehavior].
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
+
+  /// {@macro flutter.material.Material.clipBehavior}
+  ///
+  /// Defaults to [Clip.hardEdge].
+  final Clip clipBehavior;
 
   @override
   State<StatefulWidget> createState() => _ScrollablePositionedListState();
@@ -487,6 +493,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
         addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
         addRepaintBoundaries: widget.addRepaintBoundaries,
         keyboardDismissBehavior: widget.keyboardDismissBehavior,
+        clipBehavior: widget.clipBehavior,
       );
 
   double _cacheExtent(BoxConstraints constraints) => max(

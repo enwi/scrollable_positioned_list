@@ -13,6 +13,7 @@ import 'viewport.dart';
 /// to be within 0 and 1. See [CustomScrollView] for more information.
 class UnboundedCustomScrollView extends CustomScrollView {
   final bool _shrinkWrap;
+  final Clip _clipBehavior;
 
   const UnboundedCustomScrollView({
     Key? key,
@@ -30,8 +31,10 @@ class UnboundedCustomScrollView extends CustomScrollView {
     DragStartBehavior dragStartBehavior = DragStartBehavior.start,
     ScrollViewKeyboardDismissBehavior keyboardDismissBehavior =
         ScrollViewKeyboardDismissBehavior.manual,
+    Clip clipBehavior = Clip.hardEdge,
   })  : _shrinkWrap = shrinkWrap,
         _anchor = anchor,
+        _clipBehavior = clipBehavior,
         super(
           key: key,
           scrollDirection: scrollDirection,
@@ -44,8 +47,9 @@ class UnboundedCustomScrollView extends CustomScrollView {
           cacheExtent: cacheExtent,
           semanticChildCount: semanticChildCount,
           dragStartBehavior: dragStartBehavior,
-          slivers: slivers,
           keyboardDismissBehavior: keyboardDismissBehavior,
+          clipBehavior: clipBehavior,
+          slivers: slivers,
         );
 
   // [CustomScrollView] enforces constraints on [CustomScrollView.anchor], so
@@ -68,19 +72,21 @@ class UnboundedCustomScrollView extends CustomScrollView {
       return CustomShrinkWrappingViewport(
         axisDirection: axisDirection,
         offset: offset,
-        slivers: slivers,
         cacheExtent: cacheExtent,
         center: center,
         anchor: anchor,
+        clipBehavior: _clipBehavior,
+        slivers: slivers,
       );
     }
     return UnboundedViewport(
       axisDirection: axisDirection,
       offset: offset,
-      slivers: slivers,
       cacheExtent: cacheExtent,
       center: center,
       anchor: anchor,
+      clipBehavior: _clipBehavior,
+      slivers: slivers,
     );
   }
 }

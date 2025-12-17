@@ -44,6 +44,7 @@ class PositionedList extends StatefulWidget {
     this.addRepaintBoundaries = true,
     this.addAutomaticKeepAlives = true,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
+    this.clipBehavior = Clip.hardEdge,
   })  : assert(itemCount != null),
         assert(itemBuilder != null),
         assert((positionedIndex == 0) || (positionedIndex < itemCount)),
@@ -89,14 +90,13 @@ class PositionedList extends StatefulWidget {
   /// See [ScrollView.reverse].
   final bool reverse;
 
-  /// {@template flutter.widgets.scroll_view.shrinkWrap}
+  /// {@macro flutter.widgets.scroll_view.shrinkWrap}
   /// Whether the extent of the scroll view in the [scrollDirection] should be
   /// determined by the contents being viewed.
   ///
   ///  Defaults to false.
   ///
   /// See [ScrollView.shrinkWrap].
-  /// {@endtemplate}
   final bool shrinkWrap;
 
   /// How the scroll view should respond to user input.
@@ -137,6 +137,11 @@ class PositionedList extends StatefulWidget {
   ///
   /// See [ScrollView.keyboardDismissBehavior].
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
+
+  /// {@macro flutter.material.Material.clipBehavior}
+  ///
+  /// Defaults to [Clip.hardEdge].
+  final Clip clipBehavior;
 
   @override
   State<StatefulWidget> createState() => _PositionedListState();
@@ -184,6 +189,7 @@ class _PositionedListState extends State<PositionedList> {
           shrinkWrap: widget.shrinkWrap,
           semanticChildCount: widget.semanticChildCount ?? widget.itemCount,
           keyboardDismissBehavior: widget.keyboardDismissBehavior,
+          clipBehavior: widget.clipBehavior,
           slivers: <Widget>[
             if (widget.positionedIndex > 0)
               SliverPadding(
