@@ -236,7 +236,10 @@ class ItemScrollController {
   /// * 0 aligns the left edge of the item with the left edge of the view
   /// * 1 aligns the left edge of the item with the right edge of the view.
   /// * 0.5 aligns the left edge of the item with the center of the view.
-  void jumpTo({required int index, double alignment = 0}) {
+  void jumpTo({
+    required int index,
+    double alignment = 0,
+  }) {
     _scrollableListState!._jumpTo(index: index, alignment: alignment);
   }
 
@@ -299,15 +302,27 @@ class ItemScrollController {
 /// This is an experimental API and is subject to change.
 /// Behavior may be ill-defined in some cases.  Please file bugs.
 class ScrollOffsetController {
-  Future<void> animateScroll(
-      {required double offset,
-      required Duration duration,
-      Curve curve = Curves.linear}) async {
+  Future<void> animateScroll({
+    required double offset,
+    required Duration duration,
+    Curve curve = Curves.linear,
+  }) async {
     final currentPosition =
         _scrollableListState!.primary.scrollController.offset;
     final newPosition = currentPosition + offset;
     await _scrollableListState!.primary.scrollController.animateTo(
       newPosition,
+      duration: duration,
+      curve: curve,
+    );
+  }
+
+  Future<void> scrollToTop({
+    required Duration duration,
+    Curve curve = Curves.linear,
+  }) async {
+    await _scrollableListState!.primary.scrollController.animateTo(
+      0.0,
       duration: duration,
       curve: curve,
     );
@@ -502,7 +517,10 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
         widget.minCacheExtent ?? 0,
       );
 
-  void _jumpTo({required int index, required double alignment}) {
+  void _jumpTo({
+    required int index,
+    required double alignment,
+  }) {
     _stopScroll(canceled: true);
     if (index > widget.itemCount - 1) {
       index = widget.itemCount - 1;
