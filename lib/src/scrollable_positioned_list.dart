@@ -58,6 +58,7 @@ class ScrollablePositionedList extends StatefulWidget {
     this.addRepaintBoundaries = true,
     this.minCacheExtent,
     this.thumbVisibility = false,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
   })  : assert(itemCount != null),
         assert(itemBuilder != null),
         itemPositionsNotifier = itemPositionsListener as ItemPositionsNotifier?,
@@ -89,6 +90,7 @@ class ScrollablePositionedList extends StatefulWidget {
     this.addRepaintBoundaries = true,
     this.minCacheExtent,
     this.thumbVisibility = false,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
   })  : assert(itemCount != null),
         assert(itemBuilder != null),
         assert(separatorBuilder != null),
@@ -196,6 +198,11 @@ class ScrollablePositionedList extends StatefulWidget {
   ///
   /// This is passed to the internal [Scrollbar.thumbVisibility] parameter.
   final bool thumbVisibility;
+
+  /// Defines how this [ScrollView] will dismiss the keyboard automatically.
+  ///
+  /// See [ScrollView.keyboardDismissBehavior].
+  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
 
   @override
   State<StatefulWidget> createState() => _ScrollablePositionedListState();
@@ -479,6 +486,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
         padding: widget.padding,
         addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
         addRepaintBoundaries: widget.addRepaintBoundaries,
+        keyboardDismissBehavior: widget.keyboardDismissBehavior,
       );
 
   double _cacheExtent(BoxConstraints constraints) => max(
