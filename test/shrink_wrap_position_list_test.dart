@@ -291,7 +291,7 @@ void main() {
   });
 
   testWidgets(
-      'List positioned with 5 at top then scroll up 2 programatically and shrink wrap',
+      'List positioned with 5 at top then scroll up 2 programmatically and shrink wrap',
       (WidgetTester tester) async {
     final scrollController = ScrollController();
     await setUpWidgetTest(tester,
@@ -323,7 +323,7 @@ void main() {
   });
 
   testWidgets(
-      'List positioned with 5 at top then scroll down 20 programatically and shrink wrap',
+      'List positioned with 5 at top then scroll down 20 programmatically and shrink wrap',
       (WidgetTester tester) async {
     final scrollController = ScrollController();
     await setUpWidgetTest(tester,

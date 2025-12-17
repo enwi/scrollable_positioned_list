@@ -207,7 +207,7 @@ void main() {
   });
 
   testWidgets(
-      'List positioned with 5 at bottom then scroll up 2 programatically',
+      'List positioned with 5 at bottom then scroll up 2 programmatically',
       (WidgetTester tester) async {
     final scrollController = ScrollController();
     await setUpWidgetTest(tester,

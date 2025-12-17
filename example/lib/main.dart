@@ -266,7 +266,7 @@ class _ScrollablePositionedListPageState
       curve: Curves.easeInOutCubic,
       alignment: alignment);
 
-  void scrollBy(double offset) => scrollOffsetController.animateScroll(
+  void scrollBy(double offset) => scrollOffsetController.scrollBy(
       offset: offset, duration: scrollDuration, curve: Curves.easeInOutCubic);
 
   void jumpTo(int index) =>

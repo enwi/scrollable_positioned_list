@@ -243,6 +243,15 @@ class ItemScrollController {
     _scrollableListState!._jumpTo(index: index, alignment: alignment);
   }
 
+  /// Immediately, without animation, reconfigure the list so that the first item's
+  /// leading edge is at the given [alignment].
+  /// See [jumpTo] for an explanation of [alignment].
+  void jumpToTop({
+    double alignment = 0,
+  }) {
+    jumpTo(index: 0, alignment: alignment);
+  }
+
   /// Animate the list over [duration] using the given [curve] such that the
   /// item at [index] ends up with its leading edge at the given [alignment].
   /// See [jumpTo] for an explanation of alignment.
@@ -283,6 +292,27 @@ class ItemScrollController {
     );
   }
 
+  /// Animate the list over [duration] using the given [curve] such that the
+  /// first item ends up with its leading edge at the given [alignment].
+  /// See [jumpTo] for an explanation of [alignment].
+  /// See [scrollTo] for an explanation of [opacityAnimationWeights].
+  ///
+  /// The [duration] must be greater than 0; otherwise, use [jumpTo].
+  Future<void> scrollToTop({
+    double alignment = 0,
+    required Duration duration,
+    Curve curve = Curves.linear,
+    List<double> opacityAnimationWeights = const [40, 20, 40],
+  }) async {
+    await scrollTo(
+      index: 0,
+      alignment: alignment,
+      duration: duration,
+      curve: curve,
+      opacityAnimationWeights: opacityAnimationWeights,
+    );
+  }
+
   void _attach(_ScrollablePositionedListState scrollableListState) {
     assert(_scrollableListState == null);
     _scrollableListState = scrollableListState;
@@ -296,19 +326,22 @@ class ItemScrollController {
 /// Controller to scroll a certain number of pixels relative to the current
 /// scroll offset.
 ///
-/// Scrolls [offset] pixels relative to the current scroll offset. [offset] can
-/// be positive or negative.
-///
 /// This is an experimental API and is subject to change.
 /// Behavior may be ill-defined in some cases.  Please file bugs.
 class ScrollOffsetController {
-  Future<void> animateScroll({
+  _ScrollablePositionedListState? _scrollableListState;
+
+  /// The current scroll offset in pixels.
+  double get currentPosition =>
+      _scrollableListState!.primary.scrollController.offset;
+
+  /// Scrolls the list by a certain number of pixels relative to the current
+  /// scroll offset. The [offset] can be positive or negative.
+  Future<void> scrollBy({
     required double offset,
     required Duration duration,
     Curve curve = Curves.linear,
   }) async {
-    final currentPosition =
-        _scrollableListState!.primary.scrollController.offset;
     final newPosition = currentPosition + offset;
     await _scrollableListState!.primary.scrollController.animateTo(
       newPosition,
@@ -317,18 +350,13 @@ class ScrollOffsetController {
     );
   }
 
-  Future<void> scrollToTop({
-    required Duration duration,
-    Curve curve = Curves.linear,
-  }) async {
-    await _scrollableListState!.primary.scrollController.animateTo(
-      0.0,
-      duration: duration,
-      curve: curve,
-    );
+  /// Jumps the list by a certain number of pixels relative to the current
+  void jumpBy({
+    required double offset,
+  }) {
+    final newPosition = currentPosition + offset;
+    _scrollableListState!.primary.scrollController.jumpTo(newPosition);
   }
-
-  _ScrollablePositionedListState? _scrollableListState;
 
   void _attach(_ScrollablePositionedListState scrollableListState) {
     assert(_scrollableListState == null);
@@ -576,11 +604,12 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
       final localScrollAmount = itemPosition.itemLeadingEdge *
           primary.scrollController.position.viewportDimension;
       await primary.scrollController.animateTo(
-          primary.scrollController.offset +
-              localScrollAmount -
-              alignment * primary.scrollController.position.viewportDimension,
-          duration: duration,
-          curve: curve);
+        primary.scrollController.offset +
+            localScrollAmount -
+            alignment * primary.scrollController.position.viewportDimension,
+        duration: duration,
+        curve: curve,
+      );
     } else {
       final scrollAmount = _screenScrollCount *
           primary.scrollController.position.viewportDimension;
@@ -601,9 +630,10 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
                       secondary.scrollController.position.viewportDimension));
 
           startCompleter.complete(primary.scrollController.animateTo(
-              primary.scrollController.offset + direction * scrollAmount,
-              duration: duration,
-              curve: curve));
+            primary.scrollController.offset + direction * scrollAmount,
+            duration: duration,
+            curve: curve,
+          ));
           endCompleter.complete(secondary.scrollController
               .animateTo(0, duration: duration, curve: curve));
         });
