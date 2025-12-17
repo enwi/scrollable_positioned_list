@@ -268,7 +268,7 @@ void main() {
         -1 / 10);
   });
 
-  testWidgets('List positioned with 5 at top then scroll up 2 programatically',
+  testWidgets('List positioned with 5 at top then scroll up 2 programmatically',
       (WidgetTester tester) async {
     final scrollController = ScrollController();
     await setUpWidgetTest(tester,
@@ -300,7 +300,7 @@ void main() {
   });
 
   testWidgets(
-      'List positioned with 5 at top then scroll down 20 programatically',
+      'List positioned with 5 at top then scroll down 20 programmatically',
       (WidgetTester tester) async {
     final scrollController = ScrollController();
     await setUpWidgetTest(tester,
@@ -362,7 +362,7 @@ void main() {
 
   testWidgets('Does not crash when updated offscreen',
       (WidgetTester tester) async {
-    late var setState;
+    late StateSetter setState;
     bool updated = false;
 
     // There's 0 relayout boundaries in this subtree.

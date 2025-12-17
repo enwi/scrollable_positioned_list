@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:scrollable_positioned_list/src/scroll_view.dart';
 
@@ -436,7 +437,7 @@ void main() {
             screenWidth - 10, 10 + 3 * (itemHeight + separatorHeight)));
   });
 
-  testWidgets('no repaint bounderies', (WidgetTester tester) async {
+  testWidgets('no repaint boundaries', (WidgetTester tester) async {
     final itemScrollController = ItemScrollController();
     await setUpWidgetTest(
       tester,

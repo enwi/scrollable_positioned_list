@@ -45,9 +45,7 @@ class PositionedList extends StatefulWidget {
     this.addAutomaticKeepAlives = true,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
-  })  : assert(itemCount != null),
-        assert(itemBuilder != null),
-        assert((positionedIndex == 0) || (positionedIndex < itemCount)),
+  })  : assert((positionedIndex == 0) || (positionedIndex < itemCount)),
         super(key: key);
 
   /// Number of items the [itemBuilder] can produce.

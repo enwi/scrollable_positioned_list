@@ -60,9 +60,7 @@ class ScrollablePositionedList extends StatefulWidget {
     this.thumbVisibility = false,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
-  })  : assert(itemCount != null),
-        assert(itemBuilder != null),
-        itemPositionsNotifier = itemPositionsListener as ItemPositionsNotifier?,
+  })  : itemPositionsNotifier = itemPositionsListener as ItemPositionsNotifier?,
         scrollOffsetNotifier = scrollOffsetListener as ScrollOffsetNotifier?,
         separatorBuilder = null,
         super(key: key);
@@ -93,9 +91,7 @@ class ScrollablePositionedList extends StatefulWidget {
     this.thumbVisibility = false,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
-  })  : assert(itemCount != null),
-        assert(itemBuilder != null),
-        assert(separatorBuilder != null),
+  })  : assert(separatorBuilder != null),
         itemPositionsNotifier = itemPositionsListener as ItemPositionsNotifier?,
         scrollOffsetNotifier = scrollOffsetListener as ScrollOffsetNotifier?,
         super(key: key);
@@ -344,14 +340,15 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
 
   bool _isTransitioning = false;
 
-  var _animationController;
+  late AnimationController _animationController;
 
   double previousOffset = 0;
 
   @override
   void initState() {
     super.initState();
-    ItemPosition? initialPosition = PageStorage.of(context).readState(context);
+    final initialPosition =
+        PageStorage.of(context).readState(context) as ItemPosition?;
     primary.target = initialPosition?.index ?? widget.initialScrollIndex;
     primary.alignment =
         initialPosition?.itemLeadingEdge ?? widget.initialAlignment;
@@ -371,6 +368,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
         widget.scrollOffsetNotifier?.changeController.add(offsetChange);
       }
     });
+    _animationController = AnimationController(vsync: this);
   }
 
   @override
@@ -393,7 +391,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
         .removeListener(_updatePositions);
     secondary.itemPositionsNotifier.itemPositions
         .removeListener(_updatePositions);
-    _animationController?.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -580,7 +578,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
       startAnimationCallback = () {
         SchedulerBinding.instance.addPostFrameCallback((_) {
           startAnimationCallback = () {};
-          _animationController?.dispose();
+          _animationController.dispose();
           _animationController =
               AnimationController(vsync: this, duration: duration)..forward();
           opacity.parent = _opacityAnimation(opacityAnimationWeights)

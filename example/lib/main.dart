@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -10,8 +11,6 @@ const numberOfItems = 5001;
 const minItemHeight = 20.0;
 const maxItemHeight = 150.0;
 const scrollDuration = Duration(seconds: 2);
-
-const randomMax = 1 << 32;
 
 void main() {
   runApp(ScrollablePositionedListExample());
@@ -46,7 +45,7 @@ class ScrollablePositionedListPage extends StatefulWidget {
   const ScrollablePositionedListPage({Key? key}) : super(key: key);
 
   @override
-  _ScrollablePositionedListPageState createState() =>
+  State<ScrollablePositionedListPage> createState() =>
       _ScrollablePositionedListPageState();
 }
 
@@ -74,14 +73,16 @@ class _ScrollablePositionedListPageState
   void initState() {
     super.initState();
     final heightGenerator = Random(328902348);
-    final colorGenerator = Random(42490823);
     itemHeights = List<double>.generate(
         numberOfItems,
         (int _) =>
             heightGenerator.nextDouble() * (maxItemHeight - minItemHeight) +
             minItemHeight);
-    itemColors = List<Color>.generate(numberOfItems,
-        (int _) => Color(colorGenerator.nextInt(randomMax)).withOpacity(1));
+    itemColors = List<Color>.generate(
+        numberOfItems,
+        (int _) => Color(
+              (Random().nextDouble() * 0xFFFFFF).toInt() << 0,
+            ).withValues(alpha: 1.0));
   }
 
   @override
@@ -120,7 +121,7 @@ class _ScrollablePositionedListPageState
             width: 200,
             child: SliderTheme(
               data: SliderThemeData(
-                showValueIndicator: ShowValueIndicator.always,
+                showValueIndicator: ShowValueIndicator.onDrag,
               ),
               child: Slider(
                 value: alignment,
@@ -222,12 +223,12 @@ class _ScrollablePositionedListPageState
         ],
       );
 
-  ButtonStyle _scrollButtonStyle({required double horizonalPadding}) =>
+  ButtonStyle _scrollButtonStyle({required double horizontalPadding}) =>
       ButtonStyle(
-        padding: MaterialStateProperty.all(
-          EdgeInsets.symmetric(horizontal: horizonalPadding, vertical: 0),
+        padding: WidgetStateProperty.all(
+          EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 0),
         ),
-        minimumSize: MaterialStateProperty.all(Size.zero),
+        minimumSize: WidgetStateProperty.all(Size.zero),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       );
 
@@ -235,28 +236,28 @@ class _ScrollablePositionedListPageState
         key: ValueKey<String>('Scroll$value'),
         onPressed: () => scrollTo(value),
         child: Text('$value'),
-        style: _scrollButtonStyle(horizonalPadding: 20),
+        style: _scrollButtonStyle(horizontalPadding: 20),
       );
 
   Widget scrollOffsetButton(int value) => TextButton(
         key: ValueKey<String>('Scroll$value'),
         onPressed: () => scrollBy(value.toDouble()),
         child: Text('$value'),
-        style: _scrollButtonStyle(horizonalPadding: 10),
+        style: _scrollButtonStyle(horizontalPadding: 10),
       );
 
   Widget scrollPixelButton(int value) => TextButton(
         key: ValueKey<String>('Scroll$value'),
         onPressed: () => scrollTo(value),
         child: Text('$value'),
-        style: _scrollButtonStyle(horizonalPadding: 20),
+        style: _scrollButtonStyle(horizontalPadding: 20),
       );
 
   Widget jumpButton(int value) => TextButton(
         key: ValueKey<String>('Jump$value'),
         onPressed: () => jumpTo(value),
         child: Text('$value'),
-        style: _scrollButtonStyle(horizonalPadding: 20),
+        style: _scrollButtonStyle(horizontalPadding: 20),
       );
 
   void scrollTo(int index) => itemScrollController.scrollTo(

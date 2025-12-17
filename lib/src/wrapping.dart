@@ -421,14 +421,10 @@ abstract class CustomViewport extends MultiChildRenderObjectWidget {
     this.cacheExtentStyle = CacheExtentStyle.pixel,
     this.clipBehavior = Clip.hardEdge,
     List<Widget> slivers = const <Widget>[],
-  })  : assert(offset != null),
-        assert(slivers != null),
-        assert(center == null ||
+  })  : assert(center == null ||
             slivers.where((Widget child) => child.key == center).length == 1),
-        assert(cacheExtentStyle != null),
         assert(cacheExtentStyle != CacheExtentStyle.viewport ||
             cacheExtent != null),
-        assert(clipBehavior != null),
         super(key: key, children: slivers);
 
   /// The direction in which the [offset]'s [ViewportOffset.pixels] increases.
@@ -499,7 +495,6 @@ abstract class CustomViewport extends MultiChildRenderObjectWidget {
   /// otherwise, the default cross axis direction is downwards.
   static AxisDirection getDefaultCrossAxisDirection(
       BuildContext context, AxisDirection axisDirection) {
-    assert(axisDirection != null);
     switch (axisDirection) {
       case AxisDirection.up:
         assert(debugCheckHasDirectionality(
@@ -530,7 +525,7 @@ abstract class CustomViewport extends MultiChildRenderObjectWidget {
   CustomRenderViewport createRenderObject(BuildContext context);
 
   @override
-  _ViewportElement createElement() => _ViewportElement(this);
+  MultiChildRenderObjectElement createElement() => _ViewportElement(this);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -664,11 +659,9 @@ abstract class CustomRenderViewport
     double? cacheExtent,
     CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel,
     Clip clipBehavior = Clip.hardEdge,
-  })  : assert(anchor != null),
-        assert(anchor >= 0.0 && anchor <= 1.0),
+  })  : assert(anchor >= 0.0 && anchor <= 1.0),
         assert(cacheExtentStyle != CacheExtentStyle.viewport ||
             cacheExtent != null),
-        assert(clipBehavior != null),
         _center = center,
         super(
           axisDirection: axisDirection,
@@ -721,8 +714,9 @@ abstract class CustomRenderViewport
 
   @override
   void setupParentData(RenderObject child) {
-    if (child.parentData is! CustomSliverPhysicalContainerParentData)
+    if (child.parentData is! CustomSliverPhysicalContainerParentData) {
       child.parentData = CustomSliverPhysicalContainerParentData();
+    }
   }
 
   /// The relative position of the zero scroll offset.
@@ -916,7 +910,7 @@ abstract class CustomRenderViewport
   @override
   void applyPaintTransform(RenderObject child, Matrix4 transform) {
     final Offset offset = paintOffsetOf(child as RenderSliver);
-    transform.translate(offset.dx, offset.dy);
+    transform.translateByDouble(offset.dx, offset.dy, 0.0, 1.0);
   }
 
   @override

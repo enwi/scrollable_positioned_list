@@ -12,7 +12,7 @@ class ScrollOffsetNotifier implements ScrollOffsetListener {
   @override
   Stream<double> get changes => _streamController.stream;
 
-  StreamController get changeController => _streamController;
+  StreamController<double> get changeController => _streamController;
 
   void dispose() {
     _streamController.close();

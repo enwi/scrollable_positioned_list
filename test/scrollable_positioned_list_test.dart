@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:scrollable_positioned_list/src/scroll_view.dart';
 
@@ -1193,7 +1193,7 @@ void main() {
     expect(tester.getTopLeft(find.text('Item 0')).dy, 0);
   });
 
-  testWidgets('correct index sematics', (WidgetTester tester) async {
+  testWidgets('correct index semantics', (WidgetTester tester) async {
     final itemScrollController = ItemScrollController();
     await setUpWidgetTest(tester,
         itemScrollController: itemScrollController, initialIndex: 5);
@@ -1306,9 +1306,8 @@ void main() {
     final itemPositionsListener = ItemPositionsListener.create();
     await setUpWidgetTest(tester, itemPositionsListener: itemPositionsListener);
 
-    final root = WidgetsBinding
-        .instance.pipelineOwner.semanticsOwner!.rootSemanticsNode!;
-
+    final root =
+        tester.binding.pipelineOwner.semanticsOwner!.rootSemanticsNode!;
     final semanticNodes = <SemanticsNode>[root];
 
     collectSemanticNodes(root, semanticNodes);
@@ -2090,7 +2089,7 @@ void main() {
     expect(find.text('Item 70'), findsOneWidget);
   });
 
-  testWidgets('Scroll after rebuild when resusing state',
+  testWidgets('Scroll after rebuild when reusing state',
       (WidgetTester tester) async {
     tester.view.devicePixelRatio = 1.0;
     tester.view.physicalSize = const Size(screenWidth, screenHeight);
