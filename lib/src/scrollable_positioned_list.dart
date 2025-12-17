@@ -243,34 +243,57 @@ class ItemScrollController extends _AttachableController {
   /// [index]'s leading edge is at the given [alignment].
   ///
   /// See [ItemAlignment] for an explanation of [alignment].
+  ///
+  /// The [offset] is an additional offset in pixels (positive or negative) to apply to the target position.
   void jumpTo({
     required int index,
     double alignment = ItemAlignment.start,
+    double offset = 0,
   }) =>
-      _scrollableListState!._jumpTo(index: index, alignment: alignment);
+      _scrollableListState!._jumpTo(
+        index: index,
+        alignment: alignment,
+        offset: offset,
+      );
 
   /// Immediately, without animation, reconfigure the list so that the first item's
   /// leading edge is at the given [alignment].
   ///
   /// See [ItemAlignment] for an explanation of [alignment].
+  ///
+  /// The [offset] is an additional offset in pixels (positive or negative) to apply to the target position.
   void jumpToFirst({
     double alignment = ItemAlignment.start,
+    double offset = 0,
   }) =>
-      jumpTo(index: 0, alignment: alignment);
+      jumpTo(
+        index: 0,
+        alignment: alignment,
+        offset: offset,
+      );
 
   /// Immediately, without animation, reconfigure the list so that the last item's
   /// leading edge is at the given [alignment].
   ///
   /// See [ItemAlignment] for an explanation of [alignment].
+  ///
+  /// The [offset] is an additional offset in pixels (positive or negative) to apply to the target position.
   void jumpToLast({
     double alignment = ItemAlignment.start,
+    double offset = 0,
   }) =>
-      jumpTo(index: _lastIndex, alignment: alignment);
+      jumpTo(
+        index: _lastIndex,
+        alignment: alignment,
+        offset: offset,
+      );
 
   /// Animate the list over [duration] using the given [curve] such that the
   /// item at [index] ends up with its leading edge at the given [alignment].
   ///
   /// See [ItemAlignment] for an explanation of alignment.
+  ///
+  /// The [offset] is an additional offset in pixels (positive or negative) to apply to the target position.
   ///
   /// The [duration] must be greater than 0; otherwise, use [jumpTo].
   ///
@@ -292,6 +315,7 @@ class ItemScrollController extends _AttachableController {
   Future<void> scrollTo({
     required int index,
     double alignment = ItemAlignment.start,
+    double offset = 0,
     required Duration duration,
     Curve curve = Curves.linear,
     List<double> opacityAnimationWeights = const [40, 20, 40],
@@ -302,6 +326,7 @@ class ItemScrollController extends _AttachableController {
     return _scrollableListState!._scrollTo(
       index: index,
       alignment: alignment,
+      offset: offset,
       duration: duration,
       curve: curve,
       opacityAnimationWeights: opacityAnimationWeights,
@@ -314,16 +339,20 @@ class ItemScrollController extends _AttachableController {
   /// See [ItemAlignment] for an explanation of [alignment].
   /// See [scrollTo] for an explanation of [opacityAnimationWeights].
   ///
+  /// The [offset] is an additional offset in pixels (positive or negative) to apply to the target position.
+  ///
   /// The [duration] must be greater than 0; otherwise, use [jumpTo].
   Future<void> scrollToFirst({
     double alignment = 0,
     required Duration duration,
+    double offset = 0,
     Curve curve = Curves.linear,
     List<double> opacityAnimationWeights = const [40, 20, 40],
   }) async =>
       scrollTo(
         index: 0,
         alignment: alignment,
+        offset: offset,
         duration: duration,
         curve: curve,
         opacityAnimationWeights: opacityAnimationWeights,
@@ -335,16 +364,20 @@ class ItemScrollController extends _AttachableController {
   /// See [ItemAlignment] for an explanation of [alignment].
   /// See [scrollTo] for an explanation of [opacityAnimationWeights].
   ///
+  /// The [offset] is an additional offset in pixels (positive or negative) to apply to the target position.
+  ///
   /// The [duration] must be greater than 0; otherwise, use [jumpTo].
   Future<void> scrollToLast({
     double alignment = 0,
     required Duration duration,
+    double offset = 0,
     Curve curve = Curves.linear,
     List<double> opacityAnimationWeights = const [40, 20, 40],
   }) async =>
       scrollTo(
         index: _lastIndex,
         alignment: alignment,
+        offset: offset,
         duration: duration,
         curve: curve,
         opacityAnimationWeights: opacityAnimationWeights,
@@ -554,13 +587,14 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
   void _jumpTo({
     required int index,
     required double alignment,
+    double offset = 0,
   }) {
     _stopScroll(canceled: true);
     if (index > widget.itemCount - 1) {
       index = widget.itemCount - 1;
     }
     setState(() {
-      primary.scrollController.jumpTo(0);
+      primary.scrollController.jumpTo(offset);
       primary.target = index;
       primary.alignment = alignment;
     });
@@ -569,6 +603,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
   Future<void> _scrollTo({
     required int index,
     required double alignment,
+    double offset = 0,
     required Duration duration,
     Curve curve = Curves.linear,
     required List<double> opacityAnimationWeights,
@@ -583,6 +618,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
         await _startScroll(
           index: index,
           alignment: alignment,
+          offset: offset,
           duration: duration,
           curve: curve,
           opacityAnimationWeights: opacityAnimationWeights,
@@ -594,6 +630,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
       await _startScroll(
         index: index,
         alignment: alignment,
+        offset: offset,
         duration: duration,
         curve: curve,
         opacityAnimationWeights: opacityAnimationWeights,
@@ -604,6 +641,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
   Future<void> _startScroll({
     required int index,
     required double alignment,
+    double offset = 0,
     required Duration duration,
     Curve curve = Curves.linear,
     required List<double> opacityAnimationWeights,
@@ -619,7 +657,8 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
       await primary.scrollController.animateTo(
         primary.scrollController.offset +
             localScrollAmount -
-            alignment * primary.scrollController.position.viewportDimension,
+            alignment * primary.scrollController.position.viewportDimension +
+            offset,
         duration: duration,
         curve: curve,
       );
@@ -637,10 +676,12 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
           opacity.parent = _opacityAnimation(opacityAnimationWeights)
               .animate(_animationController);
           secondary.scrollController.jumpTo(-direction *
-              (_screenScrollCount *
-                      primary.scrollController.position.viewportDimension -
-                  alignment *
-                      secondary.scrollController.position.viewportDimension));
+                  (_screenScrollCount *
+                          primary.scrollController.position.viewportDimension -
+                      alignment *
+                          secondary
+                              .scrollController.position.viewportDimension) +
+              offset);
 
           startCompleter.complete(primary.scrollController.animateTo(
             primary.scrollController.offset + direction * scrollAmount,
@@ -648,7 +689,7 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
             curve: curve,
           ));
           endCompleter.complete(secondary.scrollController
-              .animateTo(0, duration: duration, curve: curve));
+              .animateTo(offset, duration: duration, curve: curve));
         });
       };
       setState(() {
