@@ -23,10 +23,6 @@ Replace this with a list of issues related to this PR. Indicate which of these i
 
 Before you create this PR confirm that it meets all requirements listed below by checking the relevant checkboxes (`[x]`). This will ensure a smooth and quick review process.
 
-- [ ] I signed the [CLA].
 - [ ] All tests from running `flutter test` pass.
 - [ ] `flutter analyze` does not report any problems on my PR.
 - [ ] I am willing to follow-up on review comments in a timely manner.
-
-<!-- Links -->
-[CLA]: https://cla.developers.google.com/
