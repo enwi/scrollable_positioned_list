@@ -1,3 +1,18 @@
+# 0.4.0
+* Remove non scrollable_positioned_list code
+* Add thumbVisibility parameter @kihyun1998 (https://github.com/google/flutter.widgets/pull/557)
+* Remove duplicate code @altynbek132 (https://github.com/google/flutter.widgets/pull/486)
+* Keyboard dismiss behavior @developerjamiu (https://github.com/google/flutter.widgets/pull/521)
+* Add clipBehavior @xinoxapps (https://github.com/google/flutter.widgets/pull/482)
+* Migrate pedantic to flutter lint @utamori (https://github.com/google/flutter.widgets/pull/459)
+* ScrollOffsetController supports scrollToTop @GeekTree0101 (https://github.com/google/flutter.widgets/pull/560)
+* Attach scroll listener to correct controller @ankitkapoor2493 (https://github.com/google/flutter.widgets/pull/496)
+* Add jumpBy @slawekkrol (https://github.com/google/flutter.widgets/pull/487)
+* Add scroll offset @hyouuu (https://github.com/google/flutter.widgets/pull/265)
+* Fix infinity scrolling bug @mig35 (https://github.com/google/flutter.widgets/pull/180)
+* Introduce ItemAlignment & _AttachableController to reduce duplicate code
+* Breaking: Rename animateScroll to scrollBy, jumpToTop to jumpToFirst and scrollToTop to scrollToFirst
+
 # 0.3.8+1
 * Migrate tests off deprecated APIs.
 * Bump min Flutter version to 3.1.0.

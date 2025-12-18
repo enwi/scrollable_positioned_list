@@ -14,16 +14,16 @@ Getting the code and configuring your environment
 -------------------------------------------------
 
  * Ensure all the dependencies described in the previous section are installed.
- * Fork `https://github.com/google/flutter.widgets` into your own GitHub account.
+ * Fork `https://github.com/enwi/scrollable_positioned_list` into your own GitHub account.
    If you already have a fork and are now installing a development environment on
    a new machine, make sure you've updated your fork so that you don't use stale
    configuration options from long ago.
  * If you haven't configured your machine with an SSH key that's known to github, then
    follow [GitHub's directions](https://help.github.com/articles/generating-ssh-keys/)
    to generate an SSH key.
- * `git clone git@github.com:<your_name_here>/flutter.widgets.git`
+ * `git clone git@github.com:<your_name_here>/scrollable_positioned_list.git`
  * `cd widgets`
- * `git remote add upstream git@github.com:google/flutter.widgets.git`
+ * `git remote add upstream git@github.com:enwi/scrollable_positioned_list.git`
    (So that you fetch from the master repository, not your clone, when running
    `git fetch` et al.)
 
@@ -38,12 +38,6 @@ Please peruse Flutter's
 working on anything non-trivial. These guidelines are intended to
 keep the code consistent and avoid common pitfalls.
 
-You must complete the
-[Contributor License Agreement](https://cla.developers.google.com/clas). You can
-do this online, and it takes only a minute. If you've never submitted code
-before, you must add your (or your organization's) name and contact info to the
-[AUTHORS](AUTHORS) file.
-
 To start working on a patch:
 
  * `git fetch upstream`
@@ -55,7 +49,7 @@ To start working on a patch:
 To send us a pull request:
 
 * `git pull-request` (if you are using [Hub](http://github.com/github/hub/)) or
-  go to `https://github.com/google/flutter.widgets` and click the
+  go to `https://github.com/enwi/scrollable_positioned_list` and click the
   "Compare & pull request" button
 
 Please make sure all your checkins have detailed commit messages explaining 

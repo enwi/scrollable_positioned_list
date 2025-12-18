@@ -1,8 +1,10 @@
 name: scrollable_positioned_list
-version: 0.3.8+1
+version: 0.4.0
 description: >
   A list with helper methods to programmatically scroll to an item.
-homepage: https://https://github.com/enwi/scrollable_positioned_list
+homepage: https://github.com/enwi/scrollable_positioned_list
+repository: https://github.com/enwi/scrollable_positioned_list
+issue_tracker: https://github.com/enwi/scrollable_positioned_list/issues
 
 environment:
   sdk: '>=2.15.0 <4.0.0'
